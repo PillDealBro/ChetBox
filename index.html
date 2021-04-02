@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <title>Chet box</title>
+        
+        <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js" integrity="sha384-DkkWv9oJFWLIydBXXjkBWnG1/fuVhw8YPBq37uvvD6WSYRFRqr21eY5Dg9ZhmWdy" crossorigin="anonymous"></script>
+
+
+</head>
+
+    <body>
+        <div class="container">
+            <br>
+        
+        <div class="jumbotron">
+            <h1 class="display-4">Posalji poruku</h1>
+            <br>
+            <input id = "ime" class = "form-control" placeholder="Ime">
+            <br>
+            <form>
+            <input type="text" id = "poruka" class = "form-control" placeholder = "Poruka">
+        </input>
+    </form>
+            <br>
+            <button id="posalji" class="btn btn-success">Posalji</button>
+        </div>
+        <div id="poruke">
+
+        </div>
+        </div>
+    </div>
+   
+
+    <script>
+        $(() => {
+            $("#posalji").click(()=>{
+               sendMessage({
+                  ime:$("#ime").val(), 
+                  poruka:$("#poruka").val()});
+                })
+              getMessages()
+            })
+            
+        function addMessages(poruka){
+           $("#poruke").append(
+              `<h4>${poruka.ime}</h4>
+              <p>${poruka.poruka}</p>`)
+           }
+           
+        function getMessages(){
+          $.get('http://localhost:3000/poruke', (data) => {
+           data.forEach(addMessages);
+           })
+         }
+         
+        function sendMessage(poruka){
+           $.post('http://localhost:3000/poruke', poruka)
+         
+         }
+        var carapa = io();
+         carapa.on("connect",() =>{
+            console.log('connection established');
+            carapa.emit('room','abc');
+         })
+         carapa.on('message',function(data){
+             console.log('Incoming message',data);
+         })
+        carapa.on('poruka',addMessages);
+         console.log(uuidv4());
+</script>  
+    </body>
+</html>
