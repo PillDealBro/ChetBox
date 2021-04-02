@@ -13,3 +13,5 @@ MONGOOSE
 ---
 BODYPARSER
 ---
+nodemon too so you run the server silly
+---
